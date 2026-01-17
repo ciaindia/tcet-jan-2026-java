@@ -1,0 +1,14 @@
+Create Spring boot project
+
+Ctrl + Shift + P
+
+Search spring initializer
+
+
+Ctrl + J 
+./mvnw spring-boot:run
+
+Windows:
+.\mvnw spring-boot:run
+
+Tomcat started on port 8080 (http) with context path '/'

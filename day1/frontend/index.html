@@ -1,0 +1,201 @@
+<table border="1">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Login</th>
+            <th>Avatar Url</th>
+        </tr>
+    </thead>
+
+    <tbody id="users">
+        <tr>
+            <td>1</td>
+            <td>shailesh</td>
+            <td>https://avatars.githubusercontent.com/u/123456789?v=4</td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    var url = `https://api.github.com/users`
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            let output = ``
+            for (let x of data) {
+                output += `<tr>
+                    <td>${x.id}</td>
+                    <td>${x.login}</td>
+                    <td><img src="${x.avatar_url}" width="100px"/></td>
+                </tr>`
+            }
+            document.getElementById("users").innerHTML = output
+        })
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- WAP to read a number and print square of that number -->
+
+<!-- <fieldset>
+    <legend>Square of a number</legend>
+
+    <label for="number">Number</label>
+    <input type="text" id="number" value="5" autofocus>
+    <br>
+    <br>
+    <button onclick="getSquare()">Submit</button>
+    <h1 id="result">Result will appear here</h1>
+</fieldset>
+
+<script>
+    function getSquare() {
+        let x = document.getElementById("number").value
+        let output = `Square of ${x} is ${x * x}`
+        document.getElementById("result").innerHTML = output
+    }
+</script> -->
+
+
+
+
+
+
+
+
+
+
+<!-- <fieldset>
+    <legend>Registration</legend>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name">
+    <br>
+    <br>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password">
+    <br>
+    <br>
+    <button>Submit</button>
+</fieldset> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <table border="1">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>City</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>shailesh</td>
+            <td>shailesh@gmail.com</td>
+            <td rowspan="2">Mumbai</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>ramesh</td>
+            <td>ramesh@gmail.com</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4">
+                This is from tfoot
+            </td>
+        </tr>
+    </tfoot>
+</table> -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <ol>
+    <li>Sunday</li>
+    <li>Monday</li>
+</ol>
+
+<ul>
+    <li>Saturn</li>
+    <li>Jupiter</li>
+</ul> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <opening-tag attribute="value" attribute2="value2">
+    CONTENT
+</closing-tag>
+
+<self-closing-tag /> -->
+
+<!-- <div>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus dolore excepturi qui ipsam minima, esse
+    voluptas tempore, consequuntur corrupti deleniti a unde voluptatem sunt laudantium omnis, reiciendis quaerat dolor
+    assumenda.
+</div>
+<div>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus dolore excepturi qui ipsam minima, esse
+    voluptas tempore, consequuntur corrupti deleniti a unde voluptatem sunt laudantium omnis, reiciendis quaerat dolor
+    assumenda.
+</div>
+<p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum, est architecto alias cupiditate magnam expedita
+    porro excepturi. Doloribus consectetur doloremque explicabo alias laudantium eligendi maxime rem at repellat. Vero,
+    expedita.
+</p>
+<p>
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati earum commodi vitae accusantium, deserunt
+    doloremque inventore accusamus officia dolor quasi sint ipsa, tempora tempore placeat iste optio asperiores. Nisi,
+    libero.
+</p> -->
