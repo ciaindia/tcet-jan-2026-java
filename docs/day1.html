@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 1: Java & Spring Boot Fundamentals - TCET Jan 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-size: 1.5em;
+        }
+
+        h4 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        pre code {
+            background: transparent;
+            color: #f8f8f2;
+            padding: 0;
+        }
+
+        .mermaid {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Day 1: Java & Spring Boot Fundamentals</h1>
+            <p>TCET - January 2026 Java Training</p>
+        </header>
+
+        <div class="content">
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h3>📚 Table of Contents</h3>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#java-basics">Java Basics</a></li>
+                    <li><a href="#control-structures">Control Structures</a></li>
+                    <li><a href="#spring-boot">Spring Boot Introduction</a></li>
+                    <li><a href="#rest-api">REST API Development</a></li>
+                    <li><a href="#exercises">Practice Exercises</a></li>
+                    <li><a href="#resources">Additional Resources</a></li>
+                </ul>
+            </div>
+
+            <!-- Overview -->
+            <section id="overview">
+                <h2>📖 Overview</h2>
+                <p>Welcome to Day 1 of the Java and Spring Boot training! Today we covered fundamental Java programming concepts and introduced Spring Boot for building REST APIs.</p>
+                
+                <div class="card">
+                    <h4>Topics Covered:</h4>
+                    <ul>
+                        <li>Java syntax and basic I/O operations</li>
+                        <li>Conditional statements (if-else)</li>
+                        <li>Loops (for loop, break, continue)</li>
+                        <li>Spring Boot project setup</li>
+                        <li>Creating REST Controllers</li>
+                        <li>Building simple REST APIs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Java Basics -->
+            <section id="java-basics">
+                <h2>☕ Java Basics</h2>
+
+                <h3>1. Naming Conventions</h3>
+                <p>Understanding proper naming conventions is crucial for writing clean, maintainable code:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Convention</th>
+                            <th>Usage</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PascalCase</strong></td>
+                            <td>Class names, File names</td>
+                            <td><code>ClassName</code>, <code>Employee</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>camelCase</strong></td>
+                            <td>Method names, Variable names</td>
+                            <td><code>functionName</code>, <code>getUserData</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>snake_case</strong></td>
+                            <td>Database columns, Constants</td>
+                            <td><code>variable_name</code>, <code>user_id</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>kebab-case</strong></td>
+                            <td>HTML/CSS files, URLs</td>
+                            <td><code>file-name.html</code>, <code>company-logo</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2. Reading User Input</h3>
+                <p>Java provides the <code>Scanner</code> class for reading user input from the console:</p>
+
+                <pre><code>import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.print("Enter a number: ");
+        int num = sc.nextInt();
+        
+        System.out.println("You entered: " + num);
+    }
+}</code></pre>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Always import <code>java.util.Scanner</code> at the top of your file when using Scanner.
+                </div>
+
+                <h3>3. Program Flow</h3>
+                <div class="mermaid">
+                    graph TD
+                        A[Start Program] --> B[Import Scanner]
+                        B --> C[Create Scanner Object]
+                        C --> D[Read User Input]
+                        D --> E[Process Data]
+                        E --> F[Display Output]
+                        F --> G[End Program]
+                        style A fill:#667eea,color:#fff
+                        style G fill:#764ba2,color:#fff
+                </div>
+            </section>
+
+            <!-- Control Structures -->
+            <section id="control-structures">
+                <h2>🔀 Control Structures</h2>
+
+                <h3>1. Conditional Statements (if-else)</h3>
+                <p>Conditional statements allow your program to make decisions based on conditions:</p>
+
+                <pre><code>import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int num = sc.nextInt();
+        
+        if (num > 0) {
+            System.out.println("Number is positive");
+        } else if (num < 0) {
+            System.out.println("Number is negative");
+        } else {
+            System.out.println("Number is zero");
+        }
+    }
+}</code></pre>
+
+                <div class="mermaid">
+                    graph TD
+                        A[Read Number] --> B{num > 0?}
+                        B -->|Yes| C[Print: Positive]
+                        B -->|No| D{num < 0?}
+                        D -->|Yes| E[Print: Negative]
+                        D -->|No| F[Print: Zero]
+                        C --> G[End]
+                        E --> G
+                        F --> G
+                        style A fill:#667eea,color:#fff
+                        style G fill:#764ba2,color:#fff
+                </div>
+
+                <h3>2. For Loops</h3>
+                <p>Loops allow you to execute code repeatedly. Here's an example with <code>Thread.sleep()</code> for delays:</p>
+
+                <pre><code>class ForLoop {
+    public static void main(String[] args) throws Exception {
+        for (int i = 1; i <= 20; i++) {
+            System.out.println("Floor No. " + i);
+            Thread.sleep(1000); // Sleep for 1 second
+            
+            if (i == 13) {
+                break; // Exit loop at floor 13
+            }
+        }
+    }
+}</code></pre>
+
+                <div class="card">
+                    <h4>Loop Control Statements:</h4>
+                    <ul>
+                        <li><strong>break:</strong> Exits the loop immediately</li>
+                        <li><strong>continue:</strong> Skips the current iteration and moves to the next</li>
+                    </ul>
+                </div>
+
+                <div class="mermaid">
+                    graph TD
+                        A[Start Loop i=1] --> B{i <= 20?}
+                        B -->|Yes| C[Print Floor No. i]
+                        C --> D[Sleep 1 second]
+                        D --> E{i == 13?}
+                        E -->|Yes| F[Break Loop]
+                        E -->|No| G[i++]
+                        G --> B
+                        B -->|No| H[End]
+                        F --> H
+                        style A fill:#667eea,color:#fff
+                        style H fill:#764ba2,color:#fff
+                </div>
+
+                <h3>3. Jackpot Game - Combining Concepts</h3>
+                <p>This example demonstrates loops, conditionals, and random number generation:</p>
+
+                <pre><code>import java.util.Scanner;
+
+class Jackpot {
+    public static void main(String[] args) {
+        int jackpot = (int) (Math.random() * 100);
+        boolean flag = false;
+
+        for (int i = 0; i < 10; i++) {
+            System.out.print("Guess a number[1-100]: ");
+            int guess = new Scanner(System.in).nextInt();
+            
+            if (jackpot == guess) {
+                System.out.println("You won");
+                flag = true;
+                break;
+            }
+
+            if (jackpot > guess)
+                System.out.println("Jackpot is greater than " + guess);
+
+            if (jackpot < guess)
+                System.out.println("Jackpot is smaller than " + guess);
+        }
+
+        if (!flag)
+            System.out.println("You lost");
+    }
+}</code></pre>
+
+                <div class="mermaid">
+                    graph TD
+                        A[Generate Random Number 1-100] --> B[Set Attempts = 10]
+                        B --> C{Attempts > 0?}
+                        C -->|Yes| D[Get User Guess]
+                        D --> E{Guess == Jackpot?}
+                        E -->|Yes| F[You Won!]
+                        E -->|No| G{Jackpot > Guess?}
+                        G -->|Yes| H[Print: Higher]
+                        G -->|No| I[Print: Lower]
+                        H --> J[Attempts--]
+                        I --> J
+                        J --> C
+                        C -->|No| K[You Lost]
+                        F --> L[End]
+                        K --> L
+                        style A fill:#667eea,color:#fff
+                        style F fill:#28a745,color:#fff
+                        style K fill:#dc3545,color:#fff
+                        style L fill:#764ba2,color:#fff
+                </div>
+            </section>
+
+            <!-- Spring Boot -->
+            <section id="spring-boot">
+                <h2>🍃 Spring Boot Introduction</h2>
+
+                <h3>What is Spring Boot?</h3>
+                <p>Spring Boot is a framework that simplifies the development of Java applications, particularly web applications and REST APIs. It provides:</p>
+
+                <ul>
+                    <li>Auto-configuration for rapid development</li>
+                    <li>Embedded web server (Tomcat)</li>
+                    <li>Production-ready features</li>
+                    <li>Minimal configuration required</li>
+                </ul>
+
+                <h3>Creating a Spring Boot Project</h3>
+                <p>You can create a Spring Boot project using Spring Initializr:</p>
+
+                <div class="card">
+                    <h4>Steps:</h4>
+                    <ol>
+                        <li>Press <code>Ctrl + Shift + P</code> in VS Code</li>
+                        <li>Search for "Spring Initializr"</li>
+                        <li>Follow the prompts to configure your project</li>
+                        <li>Select dependencies (e.g., Spring Web)</li>
+                    </ol>
+                </div>
+
+                <h3>Running Your Spring Boot Application</h3>
+
+                <h4>On Linux/Mac:</h4>
+                <pre><code>./mvnw spring-boot:run</code></pre>
+
+                <h4>On Windows:</h4>
+                <pre><code>.\mvnw spring-boot:run</code></pre>
+
+                <div class="note">
+                    <strong>📝 Note:</strong> By default, Tomcat starts on port 8080 with context path '/'. Access your application at <code>http://localhost:8080</code>
+                </div>
+
+                <h3>Spring Boot Application Architecture</h3>
+                <div class="mermaid">
+                    graph LR
+                        A[Client Browser] -->|HTTP Request| B[Spring Boot App]
+                        B -->|Port 8080| C[Embedded Tomcat]
+                        C --> D[REST Controller]
+                        D --> E[Service Layer]
+                        E --> F[Data/Model]
+                        F --> E
+                        E --> D
+                        D --> C
+                        C --> B
+                        B -->|HTTP Response| A
+                        style B fill:#667eea,color:#fff
+                        style D fill:#28a745,color:#fff
+                </div>
+            </section>
+
+            <!-- REST API -->
+            <section id="rest-api">
+                <h2>🌐 REST API Development</h2>
+
+                <h3>1. Creating a REST Controller</h3>
+                <p>A REST Controller handles HTTP requests and returns responses:</p>
+
+                <pre><code>package com.example.demo;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/calc")
+    public String sayHello() {
+        return "I am from calc get mapping";
+    }
+
+    @PostMapping("/calc")
+    public String calcPost() {
+        return "I am from calc post mapping";
+    }
+}</code></pre>
+
+                <div class="card">
+                    <h4>Key Annotations:</h4>
+                    <ul>
+                        <li><strong>@RestController:</strong> Marks the class as a REST API controller</li>
+                        <li><strong>@GetMapping:</strong> Handles HTTP GET requests</li>
+                        <li><strong>@PostMapping:</strong> Handles HTTP POST requests</li>
+                    </ul>
+                </div>
+
+                <h3>2. Creating a Model Class (POJO)</h3>
+                <p>A Plain Old Java Object (POJO) represents data structure:</p>
+
+                <pre><code>package com.example.demo;
+
+public class Employee {
+    private int id;
+    private String name;
+    private String department;
+    private int salary;
+
+    public Employee(int id, String name, String department, int salary) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    // Getters and Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+    
+    public int getSalary() { return salary; }
+    public void setSalary(int salary) { this.salary = salary; }
+}</code></pre>
+
+                <h3>3. Returning JSON Data</h3>
+                <p>Spring Boot automatically converts Java objects to JSON:</p>
+
+                <pre><code>import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/employees")
+    public List&lt;Employee&gt; showEmployees() {
+        List&lt;Employee&gt; employees = new ArrayList&lt;&gt;();
+        employees.add(new Employee(1, "John", "IT", 1000));
+        employees.add(new Employee(2, "Jane", "HR", 2000));
+        return employees;
+    }
+}</code></pre>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> When you return a Java object from a REST controller, Spring Boot automatically serializes it to JSON format.
+                </div>
+
+                <h3>REST API Request Flow</h3>
+                <div class="mermaid">
+                    sequenceDiagram
+                        participant Client
+                        participant Controller
+                        participant Model
+                        
+                        Client->>Controller: GET /employees
+                        Controller->>Model: Create Employee Objects
+                        Model-->>Controller: Return Employee List
+                        Controller-->>Client: JSON Response
+                        
+                        Note over Client,Controller: HTTP Status: 200 OK
+                        Note over Controller,Model: Auto JSON Conversion
+                </div>
+
+                <h3>Testing Your API</h3>
+                <p>You can test your REST API using:</p>
+                <ul>
+                    <li><strong>Browser:</strong> For GET requests, simply visit <code>http://localhost:8080/employees</code></li>
+                    <li><strong>Postman:</strong> For testing all HTTP methods (GET, POST, PUT, DELETE)</li>
+                    <li><strong>cURL:</strong> Command-line tool for API testing</li>
+                </ul>
+
+                <pre><code># Example cURL command
+curl http://localhost:8080/employees</code></pre>
+            </section>
+
+            <!-- Exercises -->
+            <section id="exercises">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="card">
+                    <h3>Exercise 1: Command Line Arguments</h3>
+                    <p><strong>CW1:</strong> Write a program to read name from command line argument and print "Hello &lt;Username&gt;"</p>
+                    <pre><code>// Usage: java Hello.java John
+// Output: Hello John</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Exercise 2: Addition Program</h3>
+                    <p><strong>CW2:</strong> Write a program to read 2 numbers and print addition in the following format:</p>
+                    <pre><code>// Usage: java Add.java 5 6
+// Output: 5 + 6 = 11</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Exercise 3: Cube Calculator</h3>
+                    <p><strong>CW3:</strong> Write a program to read a number using Scanner and print cube of that number</p>
+                    <pre><code>// Usage: java Cube.java
+// Enter a number: 5
+// Output: Cube of 5 is 125</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Exercise 4: Positive/Negative Check</h3>
+                    <p><strong>CW4:</strong> Write a program to read a number and check if the number is positive or negative</p>
+                </div>
+
+                <div class="card">
+                    <h3>Exercise 5: Floor Counter</h3>
+                    <p><strong>CW5:</strong> Write a program to print 1 to 20 in the following format with 1 second sleep between each print:</p>
+                    <pre><code>// Output:
+// Floor No. 1
+// Floor No. 2
+// ...
+// Floor No. 20</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Exercise 6: Jackpot Game</h3>
+                    <p><strong>CW6:</strong> Write a program to create a random jackpot number and take input from user to guess the number (Medium difficulty: 10 attempts)</p>
+                </div>
+            </section>
+
+            <!-- Resources -->
+            <section id="resources">
+                <h2>📚 Additional Resources</h2>
+
+                <h3>Official Documentation</h3>
+                <ul>
+                    <li><a href="https://docs.oracle.com/en/java/" target="_blank">Java Documentation</a></li>
+                    <li><a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot Official Site</a></li>
+                    <li><a href="https://start.spring.io/" target="_blank">Spring Initializr</a></li>
+                </ul>
+
+                <h3>Useful Commands</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>javac FileName.java</code></td>
+                            <td>Compile Java file</td>
+                        </tr>
+                        <tr>
+                            <td><code>java FileName</code></td>
+                            <td>Run compiled Java program</td>
+                        </tr>
+                        <tr>
+                            <td><code>./mvnw spring-boot:run</code></td>
+                            <td>Run Spring Boot application (Linux/Mac)</td>
+                        </tr>
+                        <tr>
+                            <td><code>.\mvnw spring-boot:run</code></td>
+                            <td>Run Spring Boot application (Windows)</td>
+                        </tr>
+                        <tr>
+                            <td><code>Ctrl + J</code></td>
+                            <td>Toggle terminal in VS Code</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Next Steps</h3>
+                <div class="card">
+                    <h4>Topics for Day 2:</h4>
+                    <ul>
+                        <li>Object-Oriented Programming (OOP) concepts</li>
+                        <li>Classes and Objects in depth</li>
+                        <li>Inheritance and Polymorphism</li>
+                        <li>Spring Boot with Database (JPA)</li>
+                        <li>CRUD Operations</li>
+                    </ul>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Important:</strong> Make sure to practice all the exercises before the next session. Understanding these fundamentals is crucial for advanced topics!
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 TCET - Java Training Program | Instructor: Shailesh Sonare</p>
+            <p>📧 shailesh.sonare@netcorecloud.com</p>
+        </footer>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>
