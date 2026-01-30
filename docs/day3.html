@@ -1,0 +1,2293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JSP with Maven & Tomcat - Complete Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      pre,
+      code {
+        font-family: 'Fira Code', monospace;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+          0 8px 10px -6px rgb(0 0 0 / 0.1);
+      }
+      .code-block {
+        position: relative;
+      }
+      .copy-btn {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .code-block:hover .copy-btn {
+        opacity: 1;
+      }
+      .step-number {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    </style>
+
+    <!-- Mermaid for Flowcharts -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'default',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true,
+          curve: 'basis'
+        }
+      });
+    </script>
+
+    <!-- Copy Button Script -->
+    <script>
+      function copyCode(button) {
+        const pre = button.parentElement.nextElementSibling;
+        const text = pre.innerText;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const icon = button.querySelector('i');
+          const originalIcon = icon.className;
+          icon.className = 'fas fa-check';
+          button.classList.add('bg-green-600', 'hover:bg-green-700');
+          button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+
+          setTimeout(() => {
+            icon.className = originalIcon;
+            button.classList.remove('bg-green-600', 'hover:bg-green-700');
+            button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+          }, 2000);
+        });
+      }
+    </script>
+  </head>
+
+  <body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-12 shadow-2xl">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <div class="flex justify-center mb-4">
+          <i class="fas fa-coffee text-6xl opacity-90"></i>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-3">
+          JSP with Maven & Tomcat
+        </h1>
+        <p class="text-xl text-indigo-100 max-w-2xl mx-auto">
+          Complete guide to building web applications with JavaServer Pages
+        </p>
+      </div>
+    </header>
+
+    <!-- Quick Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50 border-b-2 border-indigo-500">
+      <div class="max-w-6xl mx-auto px-4 py-4">
+        <div class="flex flex-wrap gap-3 justify-center text-sm">
+          <a href="#setup" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-cog mr-1"></i> Setup
+          </a>
+          <a href="#basics" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-book mr-1"></i> Basics
+          </a>
+          <a href="#crud" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-database mr-1"></i> CRUD
+          </a>
+          <a href="#advanced" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition">
+            <i class="fas fa-code mr-1"></i> Advanced
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 space-y-8">
+      <!-- Prerequisites Section -->
+      <section id="setup" class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+            <i class="fas fa-list-check text-indigo-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-indigo-600 font-semibold text-sm">STEP 1</span>
+            <h2 class="text-2xl font-bold">Prerequisites</h2>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-4 flex items-center">
+              <i class="fas fa-download text-blue-600 mr-2"></i>
+              Required Software
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
+                <span><strong>Java JDK</strong> - Version 8 or above</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
+                <span><strong>Apache Maven</strong> - Build tool</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
+                <span><strong>VS Code</strong> - Code editor</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-4 flex items-center">
+              <i class="fas fa-puzzle-piece text-purple-600 mr-2"></i>
+              VS Code Extensions
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-plug text-purple-600 mr-2 mt-1"></i>
+                <span>Extension Pack for Java</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-plug text-purple-600 mr-2 mt-1"></i>
+                <span>Maven for Java</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Verify Installation
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">java -version
+mvn -version</pre>
+        </div>
+      </section>
+
+      <!-- Create Project Section -->
+      <section id="basics" class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+            <i class="fas fa-folder-plus text-green-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-green-600 font-semibold text-sm">STEP 2</span>
+            <h2 class="text-2xl font-bold">Create Maven Web Project</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-green-600 mr-3 mt-1"></i>
+            <span>
+              This command creates a new Maven project with the web application archetype.
+              It sets up the basic structure needed for JSP development.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Maven Command
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">mvn archetype:generate -DgroupId=com.cia -DartifactId=jsp-demo -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false</pre>
+        </div>
+      </section>
+
+      <!-- Project Structure -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+            <i class="fas fa-sitemap text-yellow-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-yellow-600 font-semibold text-sm">STEP 3</span>
+            <h2 class="text-2xl font-bold">Project Structure</h2>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-folder-tree mr-1"></i> Directory Layout
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">jsp-demo/
+ ├── 📄 pom.xml
+ └── 📁 src/
+     └── 📁 main/
+         └── 📁 webapp/
+             └── 📄 index.jsp</pre>
+          </div>
+
+          <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-4 flex items-center">
+              <i class="fas fa-file-code text-yellow-600 mr-2"></i>
+              Key Files
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-file text-blue-600 mr-2 mt-1"></i>
+                <div>
+                  <strong>index.jsp</strong>
+                  <p class="text-sm text-slate-600">Entry point of your application</p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-file-code text-orange-600 mr-2 mt-1"></i>
+                <div>
+                  <strong>pom.xml</strong>
+                  <p class="text-sm text-slate-600">Maven configuration & dependencies</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- JSP Application Flow -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+            <i class="fas fa-project-diagram text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-purple-600 font-semibold text-sm">VISUAL GUIDE</span>
+            <h2 class="text-2xl font-bold">JSP Application Flow</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-purple-600 mr-3 mt-1"></i>
+            <span>
+              This flowchart shows how a JSP application works from user request to response. 
+              Understanding this flow is crucial for debugging and development.
+            </span>
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+flowchart TD
+    Start([User Opens Browser]) --> Request[User Types URL<br/>localhost:8081/demo/index.jsp]
+    Request --> Maven{Maven Build<br/>Successful?}
+    Maven -->|No| Error1[Build Error<br/>Check pom.xml]
+    Maven -->|Yes| Tomcat[Tomcat Server<br/>Starts on Port 8081]
+    Tomcat --> JSP[JSP File Loaded<br/>index.jsp]
+    JSP --> Compile{JSP Compiles<br/>to Servlet?}
+    Compile -->|No| Error2[Compilation Error<br/>Check JSP syntax]
+    Compile -->|Yes| Execute[Execute JSP Code]
+    Execute --> DB{Need Database?}
+    DB -->|Yes| DBConnect[Connect via db.jsp<br/>MySQL JDBC]
+    DBConnect --> Query[Execute SQL Query]
+    Query --> Result[Process Results]
+    Result --> HTML
+    DB -->|No| HTML[Generate HTML]
+    HTML --> Browser[Send to Browser]
+    Browser --> Display[Display Web Page]
+    Display --> End([User Sees Page])
+    
+    style Start fill:#e0f2fe
+    style End fill:#dcfce7
+    style Maven fill:#fef3c7
+    style Error1 fill:#fee2e2
+    style Error2 fill:#fee2e2
+    style Tomcat fill:#ddd6fe
+    style JSP fill:#fce7f3
+    style DB fill:#fef3c7
+    style Browser fill:#dbeafe
+          </pre>
+        </div>
+      </section>
+
+      <!-- POM Configuration -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <i class="fas fa-cog text-orange-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-orange-600 font-semibold text-sm">STEP 4</span>
+            <h2 class="text-2xl font-bold">pom.xml Configuration</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-lightbulb text-orange-600 mr-2"></i>
+            Key Features
+          </h3>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span>Packaging type: <strong>WAR</strong> (Web Application Archive)</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span>Embedded Tomcat 7 for easy deployment</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span>Port configured to <strong>8081</strong> (avoids conflicts)</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> pom.xml
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.example&lt;/groupId&gt;
+    &lt;artifactId&gt;demo&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;packaging&gt;war&lt;/packaging&gt;
+    &lt;name&gt;demo Maven Webapp&lt;/name&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-j&lt;/artifactId&gt;
+            &lt;version&gt;8.0.33&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;finalName&gt;demo&lt;/finalName&gt;
+
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.4.0&lt;/version&gt;
+            &lt;/plugin&gt;
+
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+                &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.2&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;path&gt;/demo&lt;/path&gt;
+                    &lt;port&gt;8081&lt;/port&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</pre>
+        </div>
+      </section>
+
+      <!-- Sample JSP Programs -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-code text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-blue-600 font-semibold text-sm">STEP 5</span>
+            <h2 class="text-2xl font-bold">Sample JSP Programs</h2>
+          </div>
+        </div>
+
+        <!-- Query Parameter Example -->
+        <div class="mb-8">
+          <div class="flex items-center mb-4">
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Example 1
+            </span>
+            <h3 class="ml-3 font-semibold text-lg">Query Parameter Handling</h3>
+          </div>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Reading URL Parameters
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%
+String num = request.getParameter("number");
+if (num != null) {
+    int x = Integer.parseInt(num);
+%&gt;
+    Square: &lt;%= x * x %&gt;
+&lt;% } %&gt;</pre>
+          </div>
+        </div>
+
+        <!-- POST Form Example -->
+        <div class="mb-8">
+          <div class="flex items-center mb-4">
+            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Example 2
+            </span>
+            <h3 class="ml-3 font-semibold text-lg">POST Form Handling</h3>
+          </div>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> HTML Form
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;form method="post"&gt;
+    &lt;input type="text" name="number" placeholder="Enter a number"&gt;
+    &lt;input type="submit" value="Calculate"&gt;
+&lt;/form&gt;</pre>
+          </div>
+        </div>
+
+        <!-- Database Connection Example -->
+        <div>
+          <div class="flex items-center mb-4">
+            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Example 3
+            </span>
+            <h3 class="ml-3 font-semibold text-lg">Database Connection</h3>
+          </div>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-database mr-1"></i> MySQL JDBC Connection
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">Class.forName("com.mysql.cj.jdbc.Driver");
+Connection con = DriverManager.getConnection(url, user, password);</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Maven Commands -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+            <i class="fas fa-terminal text-red-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-red-600 font-semibold text-sm">STEP 6</span>
+            <h2 class="text-2xl font-bold">Maven Build Commands</h2>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl text-center">
+            <i class="fas fa-broom text-3xl text-red-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Clean</h3>
+            <p class="text-sm text-slate-600">Remove build artifacts</p>
+          </div>
+          <div class="bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-xl text-center">
+            <i class="fas fa-box text-3xl text-orange-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Package</h3>
+            <p class="text-sm text-slate-600">Create WAR file</p>
+          </div>
+          <div class="bg-gradient-to-br from-yellow-50 to-green-50 p-6 rounded-xl text-center">
+            <i class="fas fa-download text-3xl text-yellow-600 mb-3"></i>
+            <h3 class="font-semibold mb-2">Install</h3>
+            <p class="text-sm text-slate-600">Install to local repo</p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Common Commands
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">mvn clean
+mvn package
+mvn install</pre>
+        </div>
+      </section>
+
+      <!-- Run Application -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mr-4">
+            <i class="fas fa-play text-emerald-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="text-emerald-600 font-semibold text-sm">STEP 7</span>
+            <h2 class="text-2xl font-bold">Run JSP Application</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-rocket text-emerald-600 mr-3 mt-1 text-xl"></i>
+            <span>
+              This command starts the embedded Tomcat server on port <strong>8081</strong>.
+              Your application will be accessible through your web browser.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-terminal mr-1"></i> Start Tomcat Server
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">mvn tomcat7:run</pre>
+        </div>
+
+        <div class="mt-6 bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-3 flex items-center text-blue-900">
+            <i class="fas fa-globe text-blue-600 mr-2"></i>
+            Access in Browser
+          </h3>
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-link mr-1"></i> Application URL
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">http://localhost:8081/jsp-demo/index.jsp?number=5</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Important Notes -->
+      <section class="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-2xl shadow-lg border-2 border-yellow-200">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-exclamation-triangle text-3xl text-yellow-600 mr-4"></i>
+          <h2 class="text-2xl font-bold">Important Notes</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white p-5 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-3 flex items-center text-red-700">
+              <i class="fas fa-times-circle mr-2"></i>
+              What NOT to Do
+            </h3>
+            <ul class="space-y-2">
+              <li class="flex items-start text-sm">
+                <i class="fas fa-ban text-red-500 mr-2 mt-1"></i>
+                <span>Don't use Live Server (JSP not supported)</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-ban text-red-500 mr-2 mt-1"></i>
+                <span>Don't run WAR files directly</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-ban text-red-500 mr-2 mt-1"></i>
+                <span>Avoid port 8080 (common conflicts)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-3 flex items-center text-green-700">
+              <i class="fas fa-check-circle mr-2"></i>
+              Key Points
+            </h3>
+            <ul class="space-y-2">
+              <li class="flex items-start text-sm">
+                <i class="fas fa-lightbulb text-green-500 mr-2 mt-1"></i>
+                <span>JSP cannot run directly in browser</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-lightbulb text-green-500 mr-2 mt-1"></i>
+                <span>JSP needs Tomcat server to execute</span>
+              </li>
+              <li class="flex items-start text-sm">
+                <i class="fas fa-lightbulb text-green-500 mr-2 mt-1"></i>
+                <span>WAR files are deployed, not executed</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- CRUD Section -->
+      <section id="crud" class="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-2xl shadow-2xl text-white">
+        <div class="text-center mb-8">
+          <i class="fas fa-database text-6xl mb-4 opacity-90"></i>
+          <h2 class="text-3xl font-bold mb-2">CRUD Operations in JSP</h2>
+          <p class="text-indigo-200 text-lg">
+            Learning Priority: Read → Add → Delete → Update
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-yellow-400">
+            <div class="bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P0 - PRIORITY</div>
+            <i class="fas fa-eye text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">READ</h3>
+            <p class="text-sm text-indigo-200">Fetch records first</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-green-400">
+            <div class="bg-green-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P1</div>
+            <i class="fas fa-plus-circle text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">ADD</h3>
+            <p class="text-sm text-indigo-200">Insert records</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-orange-400">
+            <div class="bg-orange-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P2</div>
+            <i class="fas fa-trash text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">DELETE</h3>
+            <p class="text-sm text-indigo-200">Remove records</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl text-center border-2 border-blue-400">
+            <div class="bg-blue-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">P3</div>
+            <i class="fas fa-edit text-4xl mb-3"></i>
+            <h3 class="font-semibold text-lg">UPDATE</h3>
+            <p class="text-sm text-indigo-200">Modify records</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Database Table -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+            <i class="fas fa-table text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">Database Setup</h2>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-database mr-1"></i> Create Users Table
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);</pre>
+        </div>
+      </section>
+
+      <!-- Database Connection -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-plug text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">Database Connection (db.jsp)</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-blue-600 mr-3 mt-1"></i>
+            <span>
+              This file establishes a connection to MySQL database. Include it in all JSP pages that need database access.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> db.jsp
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%
+String url = "jdbc:mysql://localhost:3306/your_db?useSSL=false&serverTimezone=UTC";
+String user = "root";
+String password = "password";
+
+Class.forName("com.mysql.cj.jdbc.Driver");
+Connection con = DriverManager.getConnection(url, user, password);
+%&gt;</pre>
+        </div>
+      </section>
+
+      <!-- READ Operation - P0 PRIORITY -->
+      <section id="advanced" class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-yellow-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+            <i class="fas fa-eye text-yellow-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P0 - START HERE</span>
+              <h2 class="text-2xl font-bold">READ - Fetch Records</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Learn to display data from database first</p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-lightbulb text-yellow-600 mr-3 mt-1 text-xl"></i>
+            <span>
+              <strong>Why start with READ?</strong> Understanding how to fetch and display data is fundamental. 
+              Once you can see data, you'll better understand how to add, delete, and update it.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> listUsers.jsp - Display All Records
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;h2&gt;User List&lt;/h2&gt;
+
+&lt;table border="1"&gt;
+&lt;tr&gt;
+    &lt;th&gt;ID&lt;/th&gt;
+    &lt;th&gt;Name&lt;/th&gt;
+    &lt;th&gt;Email&lt;/th&gt;
+    &lt;th&gt;Actions&lt;/th&gt;
+&lt;/tr&gt;
+
+&lt;%
+Statement st = con.createStatement();
+ResultSet rs = st.executeQuery("SELECT * FROM users");
+
+while(rs.next()) {
+    int id = rs.getInt("id");
+%&gt;
+&lt;tr&gt;
+    &lt;td&gt;&lt;%= id %&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;%= rs.getString("name") %&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;%= rs.getString("email") %&gt;&lt;/td&gt;
+    &lt;td&gt;
+        &lt;a href="editUser.jsp?id=&lt;%= id %&gt;"&gt;Edit&lt;/a&gt; |
+        &lt;a href="deleteUser.jsp?id=&lt;%= id %&gt;"&gt;Delete&lt;/a&gt;
+    &lt;/td&gt;
+&lt;/tr&gt;
+&lt;% } 
+
+rs.close();
+st.close();
+con.close();
+%&gt;
+
+&lt;/table&gt;
+&lt;br&gt;
+&lt;a href="addUser.jsp"&gt;Add New User&lt;/a&gt;</pre>
+        </div>
+
+        <!-- READ Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-yellow-600 mr-2"></i>
+            READ Operation Flow
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart LR
+    A([User Clicks<br/>View Users]) --> B[Load listUsers.jsp]
+    B --> C[Include db.jsp]
+    C --> D[Connect to MySQL]
+    D --> E[CREATE Statement]
+    E --> F[Execute SELECT Query]
+    F --> G[Get ResultSet]
+    G --> H{More Rows?}
+    H -->|Yes| I[Read Row Data]
+    I --> J[Display in Table]
+    J --> H
+    H -->|No| K[Close Resources]
+    K --> L[Show Edit/Delete Links]
+    L --> M([User Sees List])
+    
+    style A fill:#fef3c7
+    style M fill:#dcfce7
+    style D fill:#dbeafe
+    style F fill:#e0e7ff
+    style J fill:#fce7f3
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREATE/ADD Operation - P1 -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-green-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+            <i class="fas fa-plus-circle text-green-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-green-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P1 - SECOND</span>
+              <h2 class="text-2xl font-bold">ADD - Insert Record</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Now learn to add new data to the database</p>
+          </div>
+        </div>
+
+        <!-- Add User Form -->
+        <div class="mb-8">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              addUser.jsp
+            </span>
+            HTML Form with Validation
+          </h3>
+
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Form with Client-side Validation
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Add User&lt;/title&gt;
+    &lt;script&gt;
+        function validateForm() {
+            let name = document.forms["userForm"]["name"].value;
+            let email = document.forms["userForm"]["email"].value;
+
+            if (name.trim() === "" || email.trim() === "") {
+                alert("All fields are required");
+                return false;
+            }
+            return true;
+        }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Add User&lt;/h2&gt;
+    &lt;form name="userForm" action="insertUser.jsp" method="post" 
+          onsubmit="return validateForm()"&gt;
+        Name: &lt;input type="text" name="name"&gt;&lt;br&gt;
+        Email: &lt;input type="email" name="email"&gt;&lt;br&gt;
+        &lt;input type="submit" value="Save"&gt;
+    &lt;/form&gt;
+    &lt;a href="listUsers.jsp"&gt;View Users&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+          </div>
+        </div>
+
+        <!-- Insert User -->
+        <div>
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              insertUser.jsp
+            </span>
+            Server-side Processing
+          </h3>
+
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Insert Data with Validation
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+
+// Server-side validation
+if (name == null || email == null || 
+    name.trim().equals("") || email.trim().equals("")) {
+    out.println("Invalid Input");
+    return;
+}
+
+PreparedStatement ps = con.prepareStatement(
+    "INSERT INTO users(name, email) VALUES (?, ?)"
+);
+ps.setString(1, name);
+ps.setString(2, email);
+
+int rows = ps.executeUpdate();
+ps.close();
+con.close();
+
+if (rows &gt; 0) {
+    response.sendRedirect("listUsers.jsp");
+} else {
+    out.println("Insert failed");
+}
+%&gt;</pre>
+          </div>
+        </div>
+
+        <!-- ADD Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-green-600 mr-2"></i>
+            ADD Operation Flow
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    A([User Clicks<br/>Add User]) --> B[Load addUser.jsp]
+    B --> C[Display Form<br/>Name & Email]
+    C --> D[User Fills Form]
+    D --> E[Click Submit]
+    E --> F{Client-side<br/>Validation}
+    F -->|Fail| G[Show Alert<br/>Fill All Fields]
+    G --> D
+    F -->|Pass| H[POST to insertUser.jsp]
+    H --> I[Include db.jsp]
+    I --> J[Get Form Parameters]
+    J --> K{Server-side<br/>Validation}
+    K -->|Fail| L[Show Error<br/>Invalid Input]
+    K -->|Pass| M[Create PreparedStatement]
+    M --> N[Set Parameters<br/>name, email]
+    N --> O[Execute INSERT]
+    O --> P{Success?}
+    P -->|Yes| Q[Redirect to<br/>listUsers.jsp]
+    P -->|No| R[Show Error]
+    Q --> S([User Sees<br/>Updated List])
+    
+    style A fill:#dcfce7
+    style S fill:#dcfce7
+    style F fill:#fef3c7
+    style K fill:#fef3c7
+    style O fill:#e0e7ff
+    style G fill:#fee2e2
+    style L fill:#fee2e2
+    style R fill:#fee2e2
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- DELETE Operation - P2 -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-orange-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <i class="fas fa-trash text-orange-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-orange-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P2 - THIRD</span>
+              <h2 class="text-2xl font-bold">DELETE - Remove Record</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Learn to remove data - simpler than updating</p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-orange-600 mr-3 mt-1"></i>
+            <span>
+              <strong>Why before UPDATE?</strong> Delete is simpler as it only needs the ID. 
+              Once you understand delete, update will be easier to grasp.
+            </span>
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-slate-600">
+              <i class="fas fa-file-code mr-1"></i> deleteUser.jsp - Delete Record
+            </span>
+            <button
+              onclick="copyCode(this)"
+              class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+
+if (idParam == null) {
+    out.println("Invalid User ID");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+
+PreparedStatement ps = con.prepareStatement("DELETE FROM users WHERE id=?");
+ps.setInt(1, id);
+ps.executeUpdate();
+
+ps.close();
+con.close();
+
+response.sendRedirect("listUsers.jsp");
+%&gt;</pre>
+        </div>
+
+        <!-- DELETE Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-orange-600 mr-2"></i>
+            DELETE Operation Flow
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    A([User Clicks<br/>Delete Link]) --> B[Pass ID Parameter<br/>deleteUser.jsp?id=X]
+    B --> C[Load deleteUser.jsp]
+    C --> D[Include db.jsp]
+    D --> E[Get ID Parameter]
+    E --> F{ID Valid?}
+    F -->|No| G[Show Error<br/>Invalid User ID]
+    F -->|Yes| H[Parse ID to Integer]
+    H --> I[Create PreparedStatement<br/>DELETE WHERE id=?]
+    I --> J[Set ID Parameter]
+    J --> K[Execute DELETE]
+    K --> L[Close Resources]
+    L --> M[Redirect to<br/>listUsers.jsp]
+    M --> N([User Sees<br/>Updated List])
+    
+    style A fill:#fed7aa
+    style N fill:#dcfce7
+    style F fill:#fef3c7
+    style K fill:#fca5a5
+    style G fill:#fee2e2
+    style M fill:#dbeafe
+            </pre>
+          </div>
+          <div class="mt-4 bg-orange-100 border-l-4 border-orange-500 p-4 rounded">
+            <p class="text-sm flex items-start">
+              <i class="fas fa-lightbulb text-orange-600 mr-2 mt-1"></i>
+              <span><strong>Note:</strong> DELETE is simpler than UPDATE because it only needs the ID - no form data to validate!</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- UPDATE Operation - P3 -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-blue-400">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-edit text-blue-600 text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <span class="bg-blue-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P3 - ADVANCED</span>
+              <h2 class="text-2xl font-bold">UPDATE - Modify Record</h2>
+            </div>
+            <p class="text-sm text-slate-600 mt-1">Most complex operation - combines READ and INSERT concepts</p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-blue-600 mr-3 mt-1"></i>
+            <span>
+              <strong>Why last?</strong> Update requires fetching data (READ), displaying it in a form (like ADD), 
+              and then modifying it. Master the other operations first!
+            </span>
+          </p>
+        </div>
+
+        <!-- Edit User Form -->
+        <div class="mb-8">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              editUser.jsp
+            </span>
+            Load Data for Editing
+          </h3>
+
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Fetch and Display User Data
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+if (idParam == null) {
+    out.println("Invalid User ID");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE id=?");
+ps.setInt(1, id);
+ResultSet rs = ps.executeQuery();
+
+if (!rs.next()) {
+    out.println("User not found");
+    return;
+}
+%&gt;
+
+&lt;html&gt;
+&lt;body&gt;
+    &lt;h2&gt;Edit User&lt;/h2&gt;
+    &lt;form action="updateUser.jsp" method="post"&gt;
+        &lt;input type="hidden" name="id" value="&lt;%= rs.getInt("id") %&gt;"&gt;
+        Name: &lt;input type="text" name="name" value="&lt;%= rs.getString("name") %&gt;" required&gt;&lt;br&gt;
+        Email: &lt;input type="email" name="email" value="&lt;%= rs.getString("email") %&gt;" required&gt;&lt;br&gt;
+        &lt;input type="submit" value="Update"&gt;
+    &lt;/form&gt;
+    &lt;a href="listUsers.jsp"&gt;Back to List&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;%
+rs.close();
+ps.close();
+con.close();
+%&gt;</pre>
+          </div>
+        </div>
+
+        <!-- Update User -->
+        <div>
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mr-3">
+              updateUser.jsp
+            </span>
+            Process Update
+          </h3>
+
+          <div class="code-block">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold text-slate-600">
+                <i class="fas fa-file-code mr-1"></i> Update Database Record
+              </span>
+              <button
+                onclick="copyCode(this)"
+                class="copy-btn bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-2"
+              >
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-6 rounded-xl text-sm overflow-x-auto border-2 border-slate-700">&lt;%@ page import="java.sql.*" %&gt;
+&lt;%@ include file="db.jsp" %&gt;
+
+&lt;%
+String idParam = request.getParameter("id");
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+
+// Server-side validation
+if (idParam == null || name == null || email == null ||
+    name.trim().equals("") || email.trim().equals("")) {
+    out.println("Invalid input data");
+    return;
+}
+
+int id = Integer.parseInt(idParam);
+
+PreparedStatement ps = con.prepareStatement(
+    "UPDATE users SET name=?, email=? WHERE id=?"
+);
+ps.setString(1, name);
+ps.setString(2, email);
+ps.setInt(3, id);
+
+int rows = ps.executeUpdate();
+ps.close();
+con.close();
+
+if (rows &gt; 0) {
+    response.sendRedirect("listUsers.jsp");
+} else {
+    out.println("Update failed");
+}
+%&gt;</pre>
+          </div>
+        </div>
+
+        <!-- UPDATE Operation Flowchart -->
+        <div class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-diagram-project text-blue-600 mr-2"></i>
+            UPDATE Operation Flow (2 Steps)
+          </h3>
+          <div class="bg-white p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    A([User Clicks<br/>Edit Link]) --> B[Pass ID to<br/>editUser.jsp?id=X]
+    B --> C[Include db.jsp]
+    C --> D[Get ID Parameter]
+    D --> E{ID Valid?}
+    E -->|No| F[Show Error<br/>Invalid User ID]
+    E -->|Yes| G[Create PreparedStatement<br/>SELECT WHERE id=?]
+    G --> H[Execute Query]
+    H --> I{User Found?}
+    I -->|No| J[Show Error<br/>User Not Found]
+    I -->|Yes| K[Load Data into Form]
+    K --> L[Show Pre-filled Form<br/>+ Hidden ID Field]
+    L --> M[User Edits Data]
+    M --> N[Click Update Button]
+    N --> O[POST to updateUser.jsp]
+    O --> P[Get All Parameters<br/>id, name, email]
+    P --> Q{Server-side<br/>Validation}
+    Q -->|Fail| R[Show Error<br/>Invalid Input]
+    Q -->|Pass| S[Create PreparedStatement<br/>UPDATE SET name=?, email=?<br/>WHERE id=?]
+    S --> T[Set All Parameters]
+    T --> U[Execute UPDATE]
+    U --> V{Success?}
+    V -->|Yes| W[Redirect to<br/>listUsers.jsp]
+    V -->|No| X[Show Error]
+    W --> Y([User Sees<br/>Updated List])
+    
+    style A fill:#dbeafe
+    style Y fill:#dcfce7
+    style K fill:#fce7f3
+    style L fill:#fef3c7
+    style U fill:#e0e7ff
+    style F fill:#fee2e2
+    style J fill:#fee2e2
+    style R fill:#fee2e2
+    style X fill:#fee2e2
+            </pre>
+          </div>
+          <div class="mt-4 bg-blue-100 border-l-4 border-blue-500 p-4 rounded">
+            <p class="text-sm flex items-start">
+              <i class="fas fa-info-circle text-blue-600 mr-2 mt-1"></i>
+              <span><strong>Why UPDATE is Complex:</strong> It requires two steps - first READ the data (editUser.jsp), then MODIFY it (updateUser.jsp). This is why we learn it last!</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CRUD Flow Diagram -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+            <i class="fas fa-diagram-project text-indigo-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">CRUD Workflow (Learning Priority)</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-xl">
+          <div class="space-y-4">
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-400">
+              <div class="bg-yellow-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P0 - READ</div>
+              <div class="flex-1 font-mono text-sm">
+                listUsers.jsp (displays all records) ← <strong>Start Here!</strong>
+              </div>
+            </div>
+
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-400">
+              <div class="bg-green-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P1 - ADD</div>
+              <div class="flex-1 font-mono text-sm">
+                addUser.jsp → insertUser.jsp → listUsers.jsp
+              </div>
+            </div>
+
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-orange-400">
+              <div class="bg-orange-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P2 - DELETE</div>
+              <div class="flex-1 font-mono text-sm">
+                listUsers.jsp → deleteUser.jsp → listUsers.jsp
+              </div>
+            </div>
+
+            <div class="flex items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-400">
+              <div class="bg-blue-400 text-slate-900 font-bold px-4 py-2 rounded-lg mr-4">P3 - UPDATE</div>
+              <div class="flex-1 font-mono text-sm">
+                listUsers.jsp → editUser.jsp → updateUser.jsp → listUsers.jsp
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-gradient-to-r from-yellow-50 to-green-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-graduation-cap text-yellow-600 mr-2"></i>
+            Learning Path Explanation
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-yellow-600 mr-2 mt-1"></i>
+              <span><strong>P0 (READ):</strong> Learn to see data first - it's fundamental to understanding databases</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-green-600 mr-2 mt-1"></i>
+              <span><strong>P1 (ADD):</strong> Once you can view data, learn to insert new records</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-orange-600 mr-2 mt-1"></i>
+              <span><strong>P2 (DELETE):</strong> Simpler than update - just needs an ID to remove a record</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-arrow-right text-blue-600 mr-2 mt-1"></i>
+              <span><strong>P3 (UPDATE):</strong> Most complex - combines READ (fetch data) + ADD (modify data)</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Complete CRUD Comparison Flowchart -->
+        <div class="mt-8 bg-white p-6 rounded-xl shadow-lg">
+          <h3 class="font-semibold text-lg mb-4 flex items-center">
+            <i class="fas fa-layer-group text-indigo-600 mr-2"></i>
+            Complete CRUD Cycle - All Operations Together
+          </h3>
+          <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-lg">
+            <pre class="mermaid">
+flowchart TD
+    Start([Application Start]) --> List[listUsers.jsp<br/>P0 - READ]
+    
+    List --> Action{User Action?}
+    
+    Action -->|Add New| Add1[addUser.jsp<br/>Form]
+    Add1 --> Add2[insertUser.jsp<br/>INSERT Query]
+    Add2 --> List
+    
+    Action -->|Delete| Del1[deleteUser.jsp<br/>Get ID]
+    Del1 --> Del2[DELETE Query<br/>by ID]
+    Del2 --> List
+    
+    Action -->|Edit| Edit1[editUser.jsp<br/>Load Data]
+    Edit1 --> Edit2[Show Form<br/>with Data]
+    Edit2 --> Edit3[updateUser.jsp<br/>UPDATE Query]
+    Edit3 --> List
+    
+    Action -->|View Only| View[Continue<br/>Browsing]
+    View --> List
+    
+    style Start fill:#e0f2fe
+    style List fill:#fef3c7
+    style Add1 fill:#dcfce7
+    style Add2 fill:#dcfce7
+    style Del1 fill:#fed7aa
+    style Del2 fill:#fed7aa
+    style Edit1 fill:#dbeafe
+    style Edit2 fill:#dbeafe
+    style Edit3 fill:#dbeafe
+    style Action fill:#fce7f3
+            </pre>
+          </div>
+          <div class="mt-4 grid md:grid-cols-2 gap-4">
+            <div class="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-200">
+              <h4 class="font-semibold mb-2 text-sm flex items-center">
+                <i class="fas fa-star text-yellow-600 mr-2"></i>
+                Complexity Ranking
+              </h4>
+              <ol class="text-sm space-y-1 ml-4">
+                <li><strong>P0 READ:</strong> Easiest - Just fetch & display</li>
+                <li><strong>P1 ADD:</strong> Simple - Insert new data</li>
+                <li><strong>P2 DELETE:</strong> Simple - Just need ID</li>
+                <li><strong>P3 UPDATE:</strong> Complex - 2 steps required</li>
+              </ol>
+            </div>
+            <div class="bg-indigo-50 p-4 rounded-lg border-2 border-indigo-200">
+              <h4 class="font-semibold mb-2 text-sm flex items-center">
+                <i class="fas fa-lightbulb text-indigo-600 mr-2"></i>
+                Key Insight
+              </h4>
+              <p class="text-sm">
+                All operations center around <strong>listUsers.jsp</strong> (READ). 
+                After any ADD, DELETE, or UPDATE, the app always redirects back to the list 
+                to show the updated data. This is the hub of your application!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Flow Diagrams Section -->
+      <section class="bg-gradient-to-br from-cyan-600 to-blue-700 p-8 rounded-2xl shadow-2xl text-white">
+        <div class="text-center mb-8">
+          <i class="fas fa-project-diagram text-6xl mb-4 opacity-90"></i>
+          <h2 class="text-3xl font-bold mb-2">Data Flow Diagrams (DFD)</h2>
+          <p class="text-cyan-100 text-lg">
+            Step-by-step visualization of data movement in CRUD operations
+          </p>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+          <p class="text-sm text-cyan-100">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>What is a DFD?</strong> A Data Flow Diagram shows how data moves between different components 
+            (User, Browser, JSP Pages, Database). Each diagram below breaks down the complete data journey for each operation.
+          </p>
+        </div>
+      </section>
+
+      <!-- DFD 0: Context Level - Overall System -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mr-4">
+            <i class="fas fa-globe text-cyan-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-cyan-100 text-cyan-800 text-xs font-bold px-3 py-1 rounded-full">LEVEL 0</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Context Diagram - Complete System</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-cyan-50 to-blue-50 border-l-4 border-cyan-500 p-6 rounded-lg mb-6">
+          <p class="flex items-start">
+            <i class="fas fa-info-circle text-cyan-600 mr-3 mt-1"></i>
+            <span>
+              This shows the highest level view of the JSP CRUD application and how users interact with it.
+            </span>
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph LR
+    User([👤 User]) -->|"1. HTTP Requests<br/>(View/Add/Edit/Delete)"| System[JSP CRUD<br/>Application<br/>System]
+    System -->|"2. HTML Response<br/>(Web Pages)"| User
+    System <-->|"3. SQL Queries<br/>4. Query Results"| DB[(MySQL<br/>Database)]
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style System fill:#dbeafe,stroke:#3b82f6,stroke-width:3px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-4">
+          <div class="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2 text-sm">👤 User (External Entity)</h4>
+            <p class="text-xs">Sends requests, receives web pages</p>
+          </div>
+          <div class="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2 text-sm">📦 System (Process)</h4>
+            <p class="text-xs">Processes all CRUD operations</p>
+          </div>
+          <div class="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2 text-sm">💾 Database (Data Store)</h4>
+            <p class="text-xs">Stores user records permanently</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DFD 1: READ Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-yellow-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+            <i class="fas fa-eye text-yellow-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-yellow-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P0 - READ DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Fetch & Display Records</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-yellow-600 mr-2"></i>
+            Step-by-Step Data Flow
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold mb-2">📥 Input Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• HTTP Request (GET)</li>
+                <li>• URL: /listUsers.jsp</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">📤 Output Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• HTML Table with user records</li>
+                <li>• ID, Name, Email, Action Links</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>listUsers.jsp"| P1[Process 1.0<br/>📄 listUsers.jsp<br/>Receive Request]
+    
+    P1 -->|"Step 2: Include<br/>Connection File"| P2[Process 1.1<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P2 -->|"Step 3: SQL Query<br/>SELECT * FROM users"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 4: Result Set<br/>{id, name, email}"| P3[Process 1.2<br/>⚙️ Process Data<br/>Loop through rows]
+    
+    P3 -->|"Step 5: HTML Generation<br/>Build table rows"| P4[Process 1.3<br/>🎨 Format Output<br/>Create HTML]
+    
+    P4 -->|"Step 6: HTTP Response<br/>Complete HTML Page"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P2 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P3 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P4 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Data Transformation at Each Step:</h4>
+          <div class="space-y-2 text-sm">
+            <p><strong>Step 1→2:</strong> HTTP Request → Database Connection String</p>
+            <p><strong>Step 2→3:</strong> Connection → SQL SELECT Query</p>
+            <p><strong>Step 3→4:</strong> Query → ResultSet (Multiple rows of data)</p>
+            <p><strong>Step 4→5:</strong> ResultSet → HTML Table Rows (String)</p>
+            <p><strong>Step 5→6:</strong> HTML String → HTTP Response (Rendered Page)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DFD 2: CREATE/ADD Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-green-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+            <i class="fas fa-plus-circle text-green-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-green-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P1 - ADD DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Insert New Record</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-green-600 mr-2"></i>
+            Step-by-Step Data Flow
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold mb-2">📥 Input Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• User clicks "Add User"</li>
+                <li>• Form data: name, email</li>
+                <li>• Method: POST</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">📤 Output Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• New record in database</li>
+                <li>• Success message</li>
+                <li>• Redirect to list page</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>addUser.jsp"| P1[Process 2.0<br/>📝 addUser.jsp<br/>Display Form]
+    
+    P1 -->|"Step 2: HTML Form<br/>(name, email fields)"| User
+    
+    User -->|"Step 3: POST Data<br/>{name: 'John', email: 'john@example.com'}"| P2[Process 2.1<br/>📄 insertUser.jsp<br/>Receive Form Data]
+    
+    P2 -->|"Step 4: Validate Data<br/>Check null/empty"| P3{Process 2.2<br/>✅ Validation<br/>Valid?}
+    
+    P3 -->|"Invalid"| P4[Process 2.3<br/>❌ Error Handler<br/>Show Error]
+    P4 -->|"Error Message"| User
+    
+    P3 -->|"Valid"| P5[Process 2.4<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P5 -->|"Step 5: SQL Query<br/>INSERT INTO users<br/>(name, email)<br/>VALUES (?, ?)"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 6: Insert Result<br/>(rows affected)"| P6[Process 2.5<br/>✔️ Success Handler<br/>Process Response]
+    
+    P6 -->|"Step 7: Redirect<br/>Location: listUsers.jsp"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style P2 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style P3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P4 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P5 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style P6 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-green-100 border-l-4 border-green-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Data Transformation at Each Step:</h4>
+          <div class="space-y-2 text-sm">
+            <p><strong>Step 1→2:</strong> Request → HTML Form (Empty fields)</p>
+            <p><strong>Step 3:</strong> User Input → POST Data {name: "John", email: "john@mail.com"}</p>
+            <p><strong>Step 4:</strong> POST Data → Validated Data (true/false)</p>
+            <p><strong>Step 5:</strong> Validated Data → SQL INSERT Statement with parameters</p>
+            <p><strong>Step 6:</strong> SQL Execution → Result (1 row affected)</p>
+            <p><strong>Step 7:</strong> Success Result → HTTP Redirect (Location header)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DFD 3: DELETE Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-orange-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <i class="fas fa-trash text-orange-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-orange-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P2 - DELETE DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Remove Record</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-orange-600 mr-2"></i>
+            Step-by-Step Data Flow
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold mb-2">📥 Input Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• User clicks "Delete" link</li>
+                <li>• Query Parameter: id=5</li>
+                <li>• Method: GET</li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">📤 Output Data:</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• Record removed from database</li>
+                <li>• Automatic redirect</li>
+                <li>• Updated list displayed</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>deleteUser.jsp?id=5"| P1[Process 3.0<br/>📄 deleteUser.jsp<br/>Receive Request]
+    
+    P1 -->|"Step 2: Extract Parameter<br/>id = 5"| P2[Process 3.1<br/>🔍 Parameter Parser<br/>Get ID]
+    
+    P2 -->|"Step 3: Validate ID<br/>Check if null/valid"| P3{Process 3.2<br/>✅ Validation<br/>Valid?}
+    
+    P3 -->|"Invalid"| P4[Process 3.3<br/>❌ Error Handler<br/>Show Error]
+    P4 -->|"Error Message"| User
+    
+    P3 -->|"Valid: id=5"| P5[Process 3.4<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P5 -->|"Step 4: SQL Query<br/>DELETE FROM users<br/>WHERE id = 5"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 5: Delete Result<br/>(1 row deleted)"| P6[Process 3.5<br/>✔️ Success Handler<br/>Close Resources]
+    
+    P6 -->|"Step 6: Redirect<br/>Location: listUsers.jsp"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style P2 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style P3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P4 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P5 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style P6 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-orange-100 border-l-4 border-orange-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Data Transformation at Each Step:</h4>
+          <div class="space-y-2 text-sm">
+            <p><strong>Step 1:</strong> URL String → HTTP Request Object</p>
+            <p><strong>Step 2:</strong> Request Object → Parameter String "5"</p>
+            <p><strong>Step 3:</strong> Parameter String → Integer (id = 5) + Validation (true/false)</p>
+            <p><strong>Step 4:</strong> ID Integer → SQL DELETE Statement (DELETE WHERE id=5)</p>
+            <p><strong>Step 5:</strong> SQL Execution → Result (1 row affected)</p>
+            <p><strong>Step 6:</strong> Success → HTTP Redirect (Location: listUsers.jsp)</p>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-orange-50 border-2 border-orange-300 p-4 rounded-lg">
+          <p class="text-sm flex items-start">
+            <i class="fas fa-lightbulb text-orange-600 mr-2 mt-1"></i>
+            <span><strong>Why DELETE is Simple:</strong> Only needs ONE data item (ID) and ONE step (deletion). 
+            No form display, no complex validation - just ID check and delete!</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- DFD 4: UPDATE Operation -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover border-4 border-blue-300">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+            <i class="fas fa-edit text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <span class="bg-blue-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">P3 - UPDATE DFD</span>
+            <h2 class="text-2xl font-bold ml-2 inline">Data Flow: Modify Record (2-Phase)</h2>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+          <h3 class="font-semibold mb-3 flex items-center">
+            <i class="fas fa-list-ol text-blue-600 mr-2"></i>
+            Step-by-Step Data Flow (Two Phases)
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-blue-100 p-3 rounded">
+              <p class="text-sm font-semibold mb-2">📥 Phase 1: LOAD DATA</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• Input: id parameter</li>
+                <li>• Fetch existing data</li>
+                <li>• Display in form</li>
+              </ul>
+            </div>
+            <div class="bg-indigo-100 p-3 rounded">
+              <p class="text-sm font-semibold mb-2">📤 Phase 2: SAVE CHANGES</p>
+              <ul class="text-sm space-y-1 ml-4">
+                <li>• Input: id, name, email</li>
+                <li>• Update database</li>
+                <li>• Redirect to list</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <h4 class="font-semibold mb-3 text-center text-blue-700">
+            🔵 PHASE 1: editUser.jsp - Load Data for Editing
+          </h4>
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 1: GET Request<br/>editUser.jsp?id=5"| P1[Process 4.0<br/>📄 editUser.jsp<br/>Receive Request]
+    
+    P1 -->|"Step 2: Extract ID<br/>id = 5"| P2[Process 4.1<br/>🔍 Get Parameter<br/>Parse ID]
+    
+    P2 -->|"Step 3: Validate ID"| P3{Process 4.2<br/>✅ Validation<br/>Valid?}
+    
+    P3 -->|"Invalid"| P4[Process 4.3<br/>❌ Error Handler]
+    P4 --> User
+    
+    P3 -->|"Valid: id=5"| P5[Process 4.4<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P5 -->|"Step 4: SQL Query<br/>SELECT * FROM users<br/>WHERE id = 5"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 5: Result<br/>{id:5, name:'John',<br/>email:'john@mail.com'}"| P6[Process 4.5<br/>📝 Form Generator<br/>Populate Fields]
+    
+    P6 -->|"Step 6: HTML Form<br/>(Pre-filled with data)<br/>+ Hidden ID field"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P2 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P4 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P5 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style P6 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-8 bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl">
+          <h4 class="font-semibold mb-3 text-center text-indigo-700">
+            🔷 PHASE 2: updateUser.jsp - Save Modified Data
+          </h4>
+          <pre class="mermaid">
+graph TD
+    User([👤 User<br/>Browser]) -->|"Step 7: POST Data<br/>{id:5, name:'John Smith',<br/>email:'johnsmith@mail.com'}"| P7[Process 4.6<br/>📄 updateUser.jsp<br/>Receive Form Data]
+    
+    P7 -->|"Step 8: Extract All Data<br/>id, name, email"| P8[Process 4.7<br/>🔍 Parameter Parser<br/>Get All Fields]
+    
+    P8 -->|"Step 9: Validate Data"| P9{Process 4.8<br/>✅ Validation<br/>All Valid?}
+    
+    P9 -->|"Invalid"| P10[Process 4.9<br/>❌ Error Handler]
+    P10 --> User
+    
+    P9 -->|"Valid"| P11[Process 4.10<br/>🔌 db.jsp<br/>Connect Database]
+    
+    P11 -->|"Step 10: SQL Query<br/>UPDATE users<br/>SET name=?, email=?<br/>WHERE id=?"| DB[(💾 Database<br/>users table)]
+    
+    DB -->|"Step 11: Update Result<br/>(1 row updated)"| P12[Process 4.11<br/>✔️ Success Handler<br/>Close Resources]
+    
+    P12 -->|"Step 12: Redirect<br/>Location: listUsers.jsp"| User
+    
+    style User fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style P7 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style P8 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style P9 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style P10 fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+    style P11 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style P12 fill:#c7d2fe,stroke:#6366f1,stroke-width:2px
+    style DB fill:#dcfce7,stroke:#10b981,stroke-width:3px
+          </pre>
+        </div>
+
+        <div class="mt-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg">
+          <h4 class="font-semibold mb-2 text-sm">📊 Complete Data Transformation (Both Phases):</h4>
+          <div class="space-y-3 text-sm">
+            <div class="bg-white p-3 rounded">
+              <p class="font-semibold text-blue-700">Phase 1 - FETCH DATA:</p>
+              <p><strong>Step 1-2:</strong> URL "?id=5" → Integer (5)</p>
+              <p><strong>Step 4-5:</strong> ID → SQL SELECT → ResultSet {id:5, name:"John", email:"john@mail.com"}</p>
+              <p><strong>Step 6:</strong> ResultSet → Pre-filled HTML Form</p>
+            </div>
+            <div class="bg-white p-3 rounded">
+              <p class="font-semibold text-indigo-700">Phase 2 - SAVE CHANGES:</p>
+              <p><strong>Step 7-8:</strong> Form POST → {id:5, name:"John Smith", email:"johnsmith@mail.com"}</p>
+              <p><strong>Step 10:</strong> Validated Data → SQL UPDATE Statement</p>
+              <p><strong>Step 11-12:</strong> Update Result → HTTP Redirect</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-indigo-50 border-2 border-indigo-300 p-4 rounded-lg">
+          <p class="text-sm flex items-start">
+            <i class="fas fa-brain text-indigo-600 mr-2 mt-1"></i>
+            <span><strong>Why UPDATE is Most Complex:</strong> It combines READ (Phase 1) + ADD (Phase 2) concepts. 
+            You must fetch data first, then modify it. That's why it requires TWO separate JSP files and TWO request-response cycles!</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- DFD Comparison Summary -->
+      <section class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+            <i class="fas fa-balance-scale text-indigo-600 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">DFD Comparison: All CRUD Operations</h2>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                <th class="border-2 border-indigo-800 p-3 text-left">Operation</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Priority</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Input Data</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Processes</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">SQL Query</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Output Data</th>
+                <th class="border-2 border-indigo-800 p-3 text-left">Complexity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-yellow-50 hover:bg-yellow-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-eye text-yellow-600"></i> READ
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-yellow-400 px-2 py-1 rounded text-xs font-bold">P0</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • No input needed<br/>
+                  • Just page request
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 1 JSP file<br/>
+                  • 6 steps<br/>
+                  • 1 DB query
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  SELECT *<br/>FROM users
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • HTML table<br/>
+                  • All records<br/>
+                  • Action links
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-16 bg-green-200 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">Low</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="bg-green-50 hover:bg-green-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-plus-circle text-green-600"></i> ADD
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-green-400 px-2 py-1 rounded text-xs font-bold">P1</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • name (String)<br/>
+                  • email (String)<br/>
+                  • POST method
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 2 JSP files<br/>
+                  • 7 steps<br/>
+                  • Validation<br/>
+                  • 1 DB insert
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  INSERT INTO<br/>users VALUES<br/>(?,?)
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • New record<br/>
+                  • Success msg<br/>
+                  • Redirect
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-24 bg-yellow-300 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">Medium</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="bg-orange-50 hover:bg-orange-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-trash text-orange-600"></i> DELETE
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-orange-400 px-2 py-1 rounded text-xs font-bold">P2</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • id (Integer)<br/>
+                  • GET parameter<br/>
+                  • From URL
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 1 JSP file<br/>
+                  • 6 steps<br/>
+                  • ID validation<br/>
+                  • 1 DB delete
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  DELETE FROM<br/>users<br/>WHERE id=?
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • Record removed<br/>
+                  • Auto redirect<br/>
+                  • Updated list
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-20 bg-green-300 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">Low</span>
+                  </div>
+                </td>
+              </tr>
+              <tr class="bg-blue-50 hover:bg-blue-100">
+                <td class="border-2 p-3 font-semibold">
+                  <i class="fas fa-edit text-blue-600"></i> UPDATE
+                </td>
+                <td class="border-2 p-3">
+                  <span class="bg-blue-400 px-2 py-1 rounded text-xs font-bold">P3</span>
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  <strong>Phase 1:</strong> id<br/>
+                  <strong>Phase 2:</strong><br/>
+                  • id, name, email<br/>
+                  • POST method
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • 2 JSP files<br/>
+                  • 12 steps (2 phases)<br/>
+                  • 2 validations<br/>
+                  • 1 SELECT + 1 UPDATE
+                </td>
+                <td class="border-2 p-3 text-sm font-mono">
+                  SELECT *<br/>WHERE id=?<br/><br/>
+                  UPDATE users<br/>SET name=?,<br/>email=?<br/>WHERE id=?
+                </td>
+                <td class="border-2 p-3 text-sm">
+                  • Pre-filled form<br/>
+                  • Updated record<br/>
+                  • Redirect
+                </td>
+                <td class="border-2 p-3">
+                  <div class="flex items-center">
+                    <div class="w-32 bg-red-400 h-2 rounded"></div>
+                    <span class="ml-2 text-xs">High</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-4">
+          <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-300">
+            <h4 class="font-semibold mb-2 text-sm flex items-center">
+              <i class="fas fa-check-circle text-green-600 mr-2"></i>
+              Simplest Operations
+            </h4>
+            <ul class="text-xs space-y-1">
+              <li>✓ READ: No input validation needed</li>
+              <li>✓ DELETE: Only 1 data item (ID)</li>
+              <li>✓ Both use single JSP file</li>
+            </ul>
+          </div>
+          <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-4 rounded-lg border-2 border-yellow-300">
+            <h4 class="font-semibold mb-2 text-sm flex items-center">
+              <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+              Medium Complexity
+            </h4>
+            <ul class="text-xs space-y-1">
+              <li>• ADD: Form + validation required</li>
+              <li>• Two JSP files needed</li>
+              <li>• Multiple data fields</li>
+            </ul>
+          </div>
+          <div class="bg-gradient-to-br from-red-50 to-orange-50 p-4 rounded-lg border-2 border-red-300">
+            <h4 class="font-semibold mb-2 text-sm flex items-center">
+              <i class="fas fa-brain text-red-600 mr-2"></i>
+              Most Complex
+            </h4>
+            <ul class="text-xs space-y-1">
+              <li>⚠ UPDATE: Two-phase process</li>
+              <li>⚠ Combines READ + ADD</li>
+              <li>⚠ Requires 2 DB queries</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Best Practices -->
+      <section class="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl shadow-lg border-2 border-green-200">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-shield-alt text-3xl text-green-600 mr-4"></i>
+          <h2 class="text-2xl font-bold">Best Practices & Security</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-4 flex items-center text-green-700">
+              <i class="fas fa-check-double mr-2"></i>
+              Always Follow
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Use PreparedStatement</strong> - Prevents SQL Injection</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Server-side Validation</strong> - Never trust client input</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Close Resources</strong> - Prevent memory leaks</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-shield text-green-600 mr-2 mt-1"></i>
+                <span><strong>Use Hidden Fields</strong> - For IDs in update forms</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-semibold mb-4 flex items-center text-blue-700">
+              <i class="fas fa-graduation-cap mr-2"></i>
+              Important for Exams
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Know the complete file structure</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Understand the workflow between files</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Remember to include db.jsp</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                <span>Always redirect after update/delete</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg">
+          <p class="flex items-start">
+            <i class="fas fa-exclamation-triangle text-yellow-600 mr-3 mt-1 text-xl"></i>
+            <span class="text-slate-700">
+              <strong>Note:</strong> This JSP-only approach is for learning purposes. 
+              Real-world applications use Servlets, DAO pattern, and MVC architecture for better code organization.
+            </span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-2xl shadow-2xl text-white">
+        <div class="text-center mb-8">
+          <i class="fas fa-trophy text-6xl mb-4 opacity-90"></i>
+          <h2 class="text-3xl font-bold mb-2">Quick Summary</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-3 flex items-center">
+              <i class="fas fa-cube mr-2"></i>
+              Maven
+            </h3>
+            <p class="text-indigo-100 text-sm">
+              Manages dependencies and builds your project efficiently
+            </p>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-3 flex items-center">
+              <i class="fas fa-server mr-2"></i>
+              Tomcat
+            </h3>
+            <p class="text-indigo-100 text-sm">
+              Executes JSP pages and serves your web application
+            </p>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+            <h3 class="font-semibold text-lg mb-3 flex items-center">
+              <i class="fas fa-code mr-2"></i>
+              VS Code
+            </h3>
+            <p class="text-indigo-100 text-sm">
+              Industry-standard editor with Java and Maven support
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 py-8 mt-12">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p class="mb-2">
+          <i class="fas fa-book-open mr-2"></i>
+          JSP with Maven & Tomcat - Complete Tutorial
+        </p>
+        <p class="text-sm text-slate-400">
+          Learn. Build. Deploy.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
