@@ -1,0 +1,14 @@
+node -v
+
+npm -v
+
+npm create vite@latest my-react-app
+
+Framework: React
+
+Varient/Programming language: Javascript
+
+keep all other options default and enter
+
+open browser: 
+http://localhost:5173

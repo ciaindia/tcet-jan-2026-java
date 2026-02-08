@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee CRUD</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin-right: 5px;
+        }
+        input {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Employee Management</h2>
+
+<!-- ADD / EDIT FORM -->
+<input type="hidden" id="empId">
+
+<input type="text" id="name" placeholder="Name">
+<input type="text" id="department" placeholder="Department">
+<input type="number" id="salary" placeholder="Salary">
+
+<button onclick="saveEmployee()">Add / Update</button>
+
+<!-- TABLE -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Salary</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="employeeTable"></tbody>
+</table>
+
+<script>
+    const apiUrl = "http://localhost:8080/employees";
+
+    function loadEmployees() {
+        fetch(apiUrl)
+            .then(res => res.json())
+            .then(data => {
+                const table = document.getElementById("employeeTable");
+                table.innerHTML = "";
+
+                data.forEach(emp => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${emp.id}</td>
+                            <td>${emp.name}</td>
+                            <td>${emp.department}</td>
+                            <td>${emp.salary}</td>
+                            <td>
+                                <button onclick="editEmployee(${emp.id}, '${emp.name}', '${emp.department}', ${emp.salary})">Edit</button>
+                                <button onclick="deleteEmployee(${emp.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+    }
+
+    function saveEmployee() {
+        const id = document.getElementById("empId").value;
+        const employee = {
+            name: document.getElementById("name").value,
+            department: document.getElementById("department").value,
+            salary: document.getElementById("salary").value
+        };
+
+        if (id) {
+            // UPDATE
+            fetch(`${apiUrl}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(employee)
+            }).then(() => resetForm());
+        } else {
+            // CREATE
+            fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(employee)
+            }).then(() => resetForm());
+        }
+    }
+
+    function editEmployee(id, name, department, salary) {
+        document.getElementById("empId").value = id;
+        document.getElementById("name").value = name;
+        document.getElementById("department").value = department;
+        document.getElementById("salary").value = salary;
+    }
+
+    function deleteEmployee(id) {
+        if (confirm("Are you sure?")) {
+            fetch(`${apiUrl}/${id}`, { method: "DELETE" })
+                .then(() => loadEmployees());
+        }
+    }
+
+    function resetForm() {
+        document.getElementById("empId").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("department").value = "";
+        document.getElementById("salary").value = "";
+        loadEmployees();
+    }
+
+    // Load on page load
+    loadEmployees();
+</script>
+
+</body>
+</html>
